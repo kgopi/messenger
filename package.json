@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node --nouse-idle-notification --expose-gc --max-old-space-size=8192 server.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,6 +12,7 @@
     "fs": "0.0.1-security",
     "https": "^1.0.0",
     "jsonwebtoken": "^8.3.0",
+    "sticky-session": "^1.1.2",
     "ws": "^5.2.2"
   }
 }

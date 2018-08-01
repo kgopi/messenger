@@ -1,10 +1,8 @@
 const fs = require('fs');
 
-const https = require('https');
-const server = new https.createServer({
-    cert: fs.readFileSync('./cert.pem'),
-    key: fs.readFileSync('./key.pem')
-});
+const http = require('http');
+
+const server = new http.createServer();
 server.listen(process.env.PORT || 8880, () => {
     console.log(`Server started on port ${server.address().port} :)`);
 });
