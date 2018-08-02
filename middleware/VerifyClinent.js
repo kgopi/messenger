@@ -16,6 +16,6 @@ module.exports = function VerifyClient(info, cb){
                 info.req.user = decoded //[1]
                 cb(true);
             }
-        })
+        });
     }
 }

@@ -4,15 +4,28 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node --nouse-idle-notification --expose-gc --max-old-space-size=8192 server.js"
+    "start": "node --nouse-idle-notification --expose-gc --max-old-space-size=8192 ./bin/index.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "body-parser": "^1.18.3",
+    "bunyan": "^1.8.12",
+    "bunyan-prettystream": "^0.1.3",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
+    "errorhandler": "^1.5.0",
+    "express": "^4.16.3",
+    "express-ws": "^4.0.0",
     "fs": "0.0.1-security",
     "https": "^1.0.0",
     "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.10",
+    "node-uuid": "^1.4.8",
+    "querystring": "^0.2.0",
+    "response-time": "^2.3.2",
     "sticky-session": "^1.1.2",
+    "urltree": "^0.5.1",
     "ws": "^5.2.2"
   }
 }

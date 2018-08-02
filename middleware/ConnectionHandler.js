@@ -3,11 +3,7 @@ var url = require("url");
 function MessageHandler(wss, ws){
     return function(message){
         console.log('received: %s', message);
-        try{
-            broadCastMessage(JSON.parse(message), wss, ws);
-        }catch(e){
-            console.error("Failed to parse incoming message", e);
-        }
+        broadCastMessage(message, wss, ws);
     }
 }
 
@@ -22,13 +18,18 @@ function CloseHandler(origin){
     }
 }
 
-function broadCastMessage(message, wss, ws){
-    if(ws.server && message.tenantId){
-        tenantClientMap[message.tenantId].forEach(client => {
-            if(client.isAlive){
-                client.send(`Hello, broadcast message`);
-            }
-        });
+function broadCastMessage(m, wss, ws){
+    try{
+        let message = JSON.parse(m);
+        if(ws.server && message.tenantId && tenantClientMap[message.tenantId]){
+            tenantClientMap[message.tenantId].forEach(client => {
+                if(client.isAlive && client.readyState === client.OPEN){
+                    client.send(m);
+                }
+            });
+        }
+    }catch(e){
+        console.error("Failed to parse incoming message", e);
     }
 }
 

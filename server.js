@@ -1,19 +1,17 @@
-const fs = require('fs');
+var express = require('express');
 
-const http = require('http');
+function startApp(config){
+    var expressWs = require('express-ws')(express());
+    var app = expressWs.app;
 
-const server = new http.createServer();
-server.listen(process.env.PORT || 8880, () => {
-    console.log(`Server started on port ${server.address().port} :)`);
-});
+    // Configure the app based on config including Middleware
+    require('./config/app')(app, config);
 
-var WebSocketServer = require('ws').Server;
-var wss = new WebSocketServer({
-    noServer: true,
-    autoAcceptConnections: false,
-    verifyClient: require("./middleware/VerifyClinent")
-});
+    const wss = expressWs.getWss('/');
+    app.ws('/', require("./middleware/ConnectionHandler")(wss));
+    require("./middleware/ConnectionManager")(wss);
 
-server.on('upgrade', require("./middleware/UpgradeHandler")(wss));
-wss.on('connection', require("./middleware/ConnectionHandler")(wss));
-require("./middleware/ConnectionManager")(wss);
+    return app;
+}
+
+module.exports = startApp;
