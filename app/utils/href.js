@@ -1,11 +1,11 @@
 'use strict';
-var urls = require('../routes/urls');
-var config = require('./../../config');
-var qs = require('querystring');
-var _ = require('lodash');
+const urls = require('../routes/urls');
+const config = require('./../../config');
+const qs = require('querystring');
+const _ = require('lodash');
 
 // regex lifted from urltree
-var RE_MATCH_PARAM = new RegExp(':[a-z0-9_]+', 'gi');
+const RE_MATCH_PARAM = new RegExp(':[a-z0-9_]+', 'gi');
 
 // default host and version for building full urls
 var host = config.apiHost;
@@ -15,10 +15,10 @@ var version = config.apiVersion;
  * Inspects a route and returns a list of named params.
  */
 function params(name) {
-  var node = urls[name];
-  var route = node.$route;
+  const node = urls[name];
+  const route = node.$route;
 
-  var matched = route.match(RE_MATCH_PARAM);
+  const matched = route.match(RE_MATCH_PARAM);
 
   return _.map(matched, function removeColon(param) {
     return param.replace(/^:/, '');
@@ -47,15 +47,15 @@ function build(name, parameters) {
     });
   }
 
-  var route = urls[name];
-  var routeParams = params(name);
+  const route = urls[name];
+  const routeParams = params(name);
 
-  var url = host + '/' + version + route.build(parameters);
+  const url = host + '/' + version + route.build(parameters);
 
   // Seems to be not required, as the params are already added.
 
   /*// exclude params consumed by the route
-  var qsParams = _.omit(parameters, routeParams);
+  const qsParams = _.omit(parameters, routeParams);
 
   if (!_.isEmpty(qsParams)) {
     url = url + '?' + qs.stringify(qsParams);

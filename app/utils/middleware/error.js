@@ -14,7 +14,7 @@ function errorHandler (err, req, res, next) {
   // if status and message present that is controlled error from api
   // create error JSON for controlled errors
 
-  var body = {
+  const body = {
     message: err.message
   };
 

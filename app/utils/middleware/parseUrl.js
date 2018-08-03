@@ -20,8 +20,8 @@ function stringToValue(string){
  * Error handling for defined parameters is done here and middleware responds
  */
 function parseUrl(req, res, next) {
-    var parameters = {};
-    for(var key in req.query) {
+    const parameters = {};
+    for(const key in req.query) {
         parameters[key] = stringToValue(req.query[key]);
     }
     req.parameters = parameters;

@@ -1,9 +1,9 @@
 'use strict';
 
-var express = require('express');
-var urls = require('./urls');
-var router = express.Router();
-var cors = require('cors');
+const express = require('express');
+const urls = require('./urls');
+const router = express.Router();
+const cors = require('cors');
 
 function routes(app) {
     // Allow the api to accept request from web app

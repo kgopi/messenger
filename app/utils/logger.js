@@ -1,10 +1,10 @@
 'use strict';
 
-var bunyan = require('bunyan'),
+const bunyan = require('bunyan'),
   uuid     = require('node-uuid'),
   _        = require('lodash');
 
-var defaults = {
+const defaults = {
   name: 'messengerApi',
   src: true,
   serializers: {
@@ -14,7 +14,7 @@ var defaults = {
   }
 };
 
-var log = bunyan.createLogger(defaults);
+const log = bunyan.createLogger(defaults);
 
 function pre(req, res, next) {
   // add request id for whole request
@@ -40,9 +40,9 @@ function pre(req, res, next) {
 var prettyStdOut;
 
 function development() {
-  var PrettyStream = require('bunyan-prettystream');
+  const PrettyStream = require('bunyan-prettystream');
 
-  var options = _.clone(defaults);
+  const options = _.clone(defaults);
 
   // clean up a preexisting stream so we don't get a memory leak
   if (prettyStdOut) {

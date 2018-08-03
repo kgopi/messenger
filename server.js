@@ -1,8 +1,8 @@
-var express = require('express');
+const express = require('express');
 
 function startApp(config){
-    var expressWs = require('express-ws')(express());
-    var app = expressWs.app;
+    const expressWs = require('express-ws')(express());
+    const app = expressWs.app;
 
     // Configure the app based on config including Middleware
     require('./config/app')(app, config);

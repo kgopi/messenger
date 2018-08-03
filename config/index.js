@@ -1,5 +1,5 @@
 
-var config = {};
+const config = {};
 
 function configure(env) {
     config.apiHost = env.API_HOST || 'http://localhost:8880';

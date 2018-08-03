@@ -1,6 +1,6 @@
-var urltree = require('urltree');
+const urltree = require('urltree');
 
-var urls = urltree({
+const urls = urltree({
   'token': '/token'
 });
 

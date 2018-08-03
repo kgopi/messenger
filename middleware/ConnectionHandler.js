@@ -1,4 +1,4 @@
-var url = require("url");
+const url = require("url");
 
 function MessageHandler(wss, ws){
     return function(message){

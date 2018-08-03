@@ -1,8 +1,8 @@
 "use strict";
-var config = require('./../config').configure(process.env);
-var http   = require('http');
+const config = require('./../config').configure(process.env);
+const http   = require('http');
 
-var app = require('../server')(config);
+const app = require('../server')(config);
 
 // Start HTTP Server
 app.listen((+config.listenPort), function(){

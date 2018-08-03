@@ -5,7 +5,7 @@ module.exports = function VerifyClient(info, cb){
     return cb(true);
 
     // CORS validation
-    var token = info.req.headers.token;
+    const token = info.req.headers.token;
     if (!token)
         cb(false, 401, 'Unauthorized')
     else {

@@ -7,8 +7,8 @@ server.listen(process.env.PORT || 8880, () => {
     console.log(`Server started on port ${server.address().port} :)`);
 });
 
-var WebSocketServer = require('ws').Server;
-var wss = new WebSocketServer({
+const WebSocketServer = require('ws').Server;
+const wss = new WebSocketServer({
     noServer: true,
     autoAcceptConnections: false,
     verifyClient: require("./middleware/VerifyClinent")
