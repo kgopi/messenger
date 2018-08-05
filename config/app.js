@@ -19,7 +19,6 @@ function configure(app, config) {
     app.use(bodyParser.urlencoded());
     app.use(bodyLogger());
 
-    // Used to parse cookies for Oauth with Passport
     app.use(cookieParser());
     app.use(responseTime());
 

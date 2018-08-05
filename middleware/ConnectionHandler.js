@@ -45,21 +45,18 @@ function registerClient(tenantId, client){
 
 function processRequest(ws, req){
     let query = url.parse(req.url, true).query;
-    const tenantId = query.id;
     if(query.server){ // ##TODO, logic to identify the server (B2B auth)
         ws.server = true;
-    }else if(tenantId){
-        registerClient(tenantId, ws);
-        console.log(`Tenant ${tenantId} successfully registered from origin ${req.headers.origin}`);
-    }else{
-        ws.terminate();
-        console.warn(`${new Date()} Tenant miss for the connection from ${req.url}.`);
     }
+    const tenantId = ws.tenantId = req.headers.tenantId;
+    ws.userId = req.headers.userId;
+    registerClient(tenantId, ws);
+    console.log(`Tenant ${tenantId} successfully registered from origin ${req.headers.origin}`);
 }
 
 module.exports = (wss) => {
     return (ws, req) => {
-        console.log(`${new Date()} Connection from origin ${req.headers.origin}. Client: ${wss.clients.size}`);
+        console.log(`${new Date()} Connection request from origin ${req.headers.origin}.`);
         processRequest(ws, req);
         ws.isAlive = true;
         ws.on('pong', () => {

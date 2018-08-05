@@ -1,7 +1,11 @@
 const express = require('express');
 
 function startApp(config){
-    const expressWs = require('express-ws')(express());
+    const expressWs = require('express-ws')(express(), null, {
+        wsOptions: {
+            verifyClient: require("./middleware/VerifyClinent")
+        }
+    });
     const app = expressWs.app;
 
     // Configure the app based on config including Middleware

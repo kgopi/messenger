@@ -1,21 +1,19 @@
-const jwt = require("jsonwebtoken");
+const url = require('url');
 
 module.exports = function VerifyClient(info, cb){
+    let query = url.parse(info.req.url, true).query;
 
-    return cb(true);
+    if(query.server){ // #TODO Need to add auth logic for server connections
+        return cb(true);
+    }
 
-    // CORS validation
-    const token = info.req.headers.token;
-    if (!token)
-        cb(false, 401, 'Unauthorized')
-    else {
-        jwt.verify(token, 'secret-key', function (err, decoded) {
-            if (err) {
-                cb(false, 401, 'Unauthorized')
-            } else {
-                info.req.user = decoded //[1]
-                cb(true);
-            }
-        });
+    const token = process.authTokens[query.id];
+    if(token){
+        info.req.headers.userId = token.userId;
+        info.req.headers.tenantId = token.tenantId;
+        return cb(true);
+    }else{
+        console.info(`Websocket connection rejected due to invalid token -- ${token}`);
+        return cb(false);
     }
 }
