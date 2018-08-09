@@ -1,10 +1,18 @@
 const url = require('url');
+const config = require("./../config");
+const cryptor = require("./../app/utils/encryption");
 
 module.exports = function VerifyClient(info, cb){
     let query = url.parse(info.req.url, true).query;
 
-    if(query.server){ // #TODO Need to add auth logic for server connections
-        return cb(true);
+    if(query.b2b){
+        if(query.secret == null){
+            console.error("Provided shared secret can not be blank.");
+        }else if(cryptor.decrypt(query.secret) == config.mdaSecretKey){
+            return cb(true);
+        }
+        console.error("Provided shared secret key is not matched.");
+        return cb(false);
     }
 
     const token = process.authTokens[query.id];

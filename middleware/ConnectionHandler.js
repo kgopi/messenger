@@ -45,7 +45,7 @@ function registerClient(tenantId, client){
 
 function processRequest(ws, req){
     let query = url.parse(req.url, true).query;
-    if(query.server){ // ##TODO, logic to identify the server (B2B auth)
+    if(query.b2b){
         ws.server = true;
     }
     const tenantId = ws.tenantId = req.headers.tenantId;
