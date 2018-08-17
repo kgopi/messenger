@@ -1,0 +1,57 @@
+{
+  "name": "informer",
+  "description": "informer",
+  "version": "1.0.0",
+  "contributors": [
+    {
+      "name": "Gopi Kommu",
+      "email": "kgopi@gainsight.com"
+    }
+  ],
+  "dependencies": {
+    "base-64": "^0.1.0",
+    "body-parser": "^1.18.3",
+    "bunyan": "^1.8.12",
+    "bunyan-prettystream": "^0.1.3",
+    "clusterws": "^3.2.0",
+    "connect": "3.0.1",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.4",
+    "crypto-js": "^3.1.9-1",
+    "errorhandler": "^1.5.0",
+    "express": "4.16.3",
+    "express-ws": "^4.0.0",
+    "fs": "0.0.1-security",
+    "https": "^1.0.0",
+    "jsonwebtoken": "^8.3.0",
+    "lodash": "^4.17.10",
+    "minimist": "1.1.0",
+    "morgan": "1.7.0",
+    "node-env-file": "^0.1.8",
+    "node-uuid": "^1.4.8",
+    "querystring": "^0.2.0",
+    "response-time": "^2.3.2",
+    "sc-errors": "^1.4.0",
+    "sc-framework-health-check": "^2.0.0",
+    "sc-hot-reboot": "^1.0.0",
+    "scc-broker-client": "^6.0.1",
+    "serve-static": "1.13.2",
+    "socketcluster": "^14.0.4",
+    "socketcluster-client": "^13.0.1",
+    "sticky-session": "^1.1.2",
+    "urltree": "^0.5.1",
+    "utf8": "^3.0.0",
+    "uuid": "^3.3.2",
+    "ws": "^5.2.2"
+  },
+  "keywords": [
+    "websocket",
+    "server",
+    "realtime",
+    "informer"
+  ],
+  "readmeFilename": "README.md",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
