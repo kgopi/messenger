@@ -15,6 +15,7 @@ function routes(app) {
     // enable cors preflight for all endpoints
     router.options('*', cors());
     router.route(urls.token.toString()).get(require("./../controllers/getAuthToken"));
+    router.route(urls.broadcast.toString()).post(require("./../controllers/broadcast"));
 
     app.use('/messenger', router); // :version should be changed to version number
 }

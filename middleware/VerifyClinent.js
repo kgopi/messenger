@@ -1,10 +1,10 @@
 const url = require('url');
 const config = require("./../config");
 const cryptor = require("./../app/utils/encryption");
+const jwt = require("jsonwebtoken");
 
-module.exports = function VerifyClient(req, cb){
-    console.log('VerifyClient');
-    return cb();
+module.exports = function VerifyClient(scServerSocket, cb){
+    let req = scServerSocket.socket.request;
     let query = url.parse(req.url, true).query;
 
     if(query.b2b){
@@ -18,14 +18,14 @@ module.exports = function VerifyClient(req, cb){
         return cb(err);
     }
 
-    const token = process.scServer.authTokens[query.id];
-    if(true){
-        req.headers.userId = Date.now() + "qweqw" || token.userId;
-        req.headers.tenantId = Date.now() + "qweqwe" || token.tenantId;
-        return cb();
-    }else{
-        console.error(`Websocket connection rejected due to invalid token -- ${token}`);
-        var err = new MyCustomHandshakeFailedError('Handshake failed');
-        return cb(err);
-    }
+    jwt.verify(query.id, config.mdaSecretKeyPassword, function(err, decoded) {
+        if (err) {
+            console.log(`Websocket connection rejected due to invalid token -- ${query.id}`);
+            cb('Handshake failed');
+        }else{
+            req.headers.userId = decoded.userId;
+            req.headers.tenantId = decoded.tenantId;
+            cb();
+        }
+      });
 }

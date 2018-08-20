@@ -12,7 +12,6 @@ run() {
         app = express(),
         httpServer = this.httpServer, 
         scServer = this.scServer;
-    process._worker = this;
 
     // Configure the app based on config including Middleware
     require('./config/app')(app, config);

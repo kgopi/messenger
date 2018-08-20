@@ -3,9 +3,6 @@ const url = require("url");
 function MessageHandler(client){
     return function(data){
         console.log('received: %s', data, process.id);
-        client.server.exchange.publish("broadcast", data);
-        console.log("Published to other other worker clients", Object.keys(client.server.clients).length);
-        //broadCastMessage(data, client);
     }
 }
 
@@ -20,16 +17,15 @@ function CloseHandler(origin){
     }
 }
 
-function broadCastMessage(data, _client){
+function broadCastMessage(data){
     try{
-        debugger;
         let message = JSON.parse(data);
-        if(_client.server && message.tenantId && tenantClientMap[message.tenantId]){
-            tenantClientMap[message.tenantId].forEach(client => {
-                if(client.readyState === client.OPEN){
-                    client.emit("message", data);
-                }
+        if(data.filters && data.filters.users){
+            data.filters.users.forEach(userId => {
+                client.server.exchange.publish(`broadcast/${message.tenantId}/${message.userId}`, data);
             });
+        }else{
+            client.server.exchange.publish(`broadcast/${message.tenantId}`, data);
         }
     }catch(e){
         console.error("Failed to parse incoming message", e);

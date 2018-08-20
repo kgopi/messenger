@@ -1,7 +1,8 @@
 const urltree = require('urltree');
 
 const urls = urltree({
-  'token': '/token'
+  'token': '/token',
+  'broadcast': '/broadcast'
 });
 
 module.exports = urls;
