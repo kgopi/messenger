@@ -33,13 +33,6 @@ var start = function () {
   var socketCluster = new SocketCluster(options);
   socketCluster.authTokens = {};
 
-  socketCluster.on("workerMessage", (workerId, eve, cb)=>{
-    if(eve.type = "REG_TOKEN" && eve.data){
-      socketCluster.authTokens[eve.data.tokenId] = eve.data.tokenMappings;
-    }
-    cb();
-  });
-
   socketCluster.on(socketCluster.EVENT_WORKER_CLUSTER_START, function (workerClusterInfo) {
     console.log('   >> WorkerCluster PID:', workerClusterInfo.pid);
   });

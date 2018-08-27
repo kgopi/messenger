@@ -1,4 +1,5 @@
 
+const PropertiesReader = require("properties-reader");
 const config = {};
 
 function configure(env) {
@@ -10,6 +11,21 @@ function configure(env) {
     config.workers = 2,//Number(env.SOCKETCLUSTER_WORKERS) || require('os').cpus().length;
     config.brokers = Number(env.SOCKETCLUSTER_BROKERS) || 1;
     config.socketChannelLimit = Number(env.SOCKETCLUSTER_SOCKET_CHANNEL_LIMIT) || 1000;
+    config.confFilePath = env.CONF_FILE_PATH || "/../gs-env/abstract.conf";
+    if(config.confFilePath){
+        try{
+            properties = PropertiesReader(process.cwd() + config.confFilePath);
+            const userName = properties.get("mongo.global.username"),
+                password = properties.get("mongo.global.password"),
+                host = properties.get("mongo.global.host"),
+                port = properties.get("mongo.global.port"),
+                db = properties.get("mongo.global.db");
+            config.dbURI = `mongodb://${userName}:${password}@${host}:${port}/${db}`;
+            Object.assign(config, properties.getAllProperties());
+        }catch(e){
+            console.error("Failed to load config file", e);
+        }
+    }
     return config;
 }
 

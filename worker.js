@@ -16,6 +16,9 @@ run() {
     // Configure the app based on config including Middleware
     require('./config/app')(app, config);
 
+    // DB
+    require("./app/db").connect();
+
     // http
     if (environment === 'dev') {
       app.use(morgan('dev'));
@@ -26,6 +29,24 @@ run() {
     // ws
     scServer.on('connection', require("./middleware/ConnectionHandler"));
     scServer.addMiddleware(scServer.MIDDLEWARE_HANDSHAKE_SC, require("./middleware/VerifyClinent"));
+    scServer.addMiddleware(scServer.MIDDLEWARE_PUBLISH_OUT,
+      function (req, next) {
+        const targetUserId = req.socket.userId;
+        const notifierUserId = req.data.userId;
+
+        if(req.socket.tenantId != req.data.tenantId){
+          console.log(`Invalid target-tenant ${req.socket.tenantId} to listen the event of tenant ${req.data.tenantId}`);
+          return next(true);
+        }
+
+        if(/^broadcast/.test(req.channel) && targetUserId === notifierUserId){
+          console.info(`User ${targetUserId} is not eligible for listening his own event`);
+          next(true);
+        }else{
+          next();
+        }
+      }
+    );
   }
 }
 

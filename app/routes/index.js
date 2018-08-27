@@ -16,6 +16,7 @@ function routes(app) {
     router.options('*', cors());
     router.route(urls.token.toString()).get(require("./../controllers/getAuthToken"));
     router.route(urls.broadcast.toString()).post(require("./../controllers/broadcast"));
+    router.route(urls.inactivate.toString()).post(require("./../controllers/event").inactivate);
 
     app.use('/messenger', router); // :version should be changed to version number
 }
