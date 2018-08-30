@@ -37,7 +37,6 @@ module.exports = (req, next) => {
       console.info(`User ${targetUserId} is not eligible for listening his own event`);
       next(true);
     }else{
-      debugger;
       getSettings({userId: targetUserId, tenantId: req.socket.tenantId}, (err, settings)=>{
         if(err){
           return next(err);

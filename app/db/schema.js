@@ -15,20 +15,20 @@ const EventSchema = new Schema({
 
 const GlobalPreferencesSchema = new Schema({
     tenantId: {type: String, required: true},
-    emailSettings: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
-    inAppSettings: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
-    MobileSettings: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
-    desktopSettings: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
+    email: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
+    inApp: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
+    mobile: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
+    desktop: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
     createDate: { type: Date, default: Date.now }
 });
 
 const UserPreferencesSchema = new Schema({
     tenantId: {type: String, required: true},
     userId: {type: String, required: true},
-    emailSettings: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
-    inAppSettings: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
-    MobileSettings: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
-    desktopSettings: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
+    email: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
+    inApp: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
+    mobile: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
+    desktop: { type: Map, required: true, default: {enabled: true, areas: {ant: true}} },
     createDate: { type: Date, default: Date.now }
 });
 

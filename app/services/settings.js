@@ -1,15 +1,25 @@
-const getSettings = require("./../controllers/settings").get;
+const Settings = require("./../controllers/settings");
+const BaseError = require("./../utils/error").BaseError;
 
 module.exports = {
     get: (req, res, next)=>{
-        getSettings({userId: req.headers.userId, tenantId: req.headers.tenantId}, (err, doc)=>{
-            if(err){
-                console.log("Failed to fetch notification settings", err);
-                res.status(400).json({result: false, message: "Failed to fetch notification settings for the user."});
+        Settings.getUserSettings({userId: req.headers.userId, tenantId: req.headers.tenantId}).then((doc)=>{
+            if(doc == null){
+                Settings.getGlobalSettings({tenantId: req.headers.tenantId}, req.body).then((gdoc)=>{
+                    res.status(200).json({result: true, data: gdoc});
+                });
             }else{
                 res.status(200).json({result: true, data: doc});
             }
+        }).catch(err=>{
+            next(new BaseError(400, `Failed to fetch notification settings for the user ${req.headers.userId}`, err));
         });
-        next();
+    },
+    update: (req, res, next)=>{
+        Settings.updateUserSettings({userId: req.headers.userId, tenantId: req.headers.tenantId}, req.body).then((doc)=>{
+            res.status(201).json({result: true, data: doc});
+        }).catch(err=>{
+            next(new BaseError(400, `Failed to update notification settings for ${req.headers.userId}`, err));
+        });
     }
 }
