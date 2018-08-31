@@ -30,8 +30,9 @@ module.exports.attach = function (broker) {
           queueMap[channelName] = rabbitClient.queue('', {exclusive: true}, function (rabbitQueue) {
             rabbitQueue.bind(rabbitExchange, '');
             rabbitQueue.subscribe(function (packet) {
+              console.info(`Received (${channelName}) event from rabbitmq`);
               if (packet && packet.instanceId != instanceId) {
-                console.info(`Publishing an event (${channelName}) to other brokers`);
+                console.info(`Forwarding (${channelName}) event to all the workers`);
                 broker.publish(channelName, packet.data);
               }
             })
@@ -49,7 +50,7 @@ module.exports.attach = function (broker) {
         data: data
       };
       rabbitClient.exchange(channelName, {type: 'fanout', durable: true, autoDelete: false}, function (rabbitExchange) {
-        console.info(`Publishing event (${channelName}) to rabbitmq by broker ${instanceId}`);
+        console.info(`Publishing (${channelName}) event to rabbitmq from broker ${instanceId}`);
         rabbitExchange.publish('', packet, {
           contentType: 'application/json'
         });
