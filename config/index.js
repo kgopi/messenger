@@ -12,6 +12,13 @@ function configure(env) {
     config.brokers = Number(env.SOCKETCLUSTER_BROKERS) || 1;
     config.socketChannelLimit = Number(env.SOCKETCLUSTER_SOCKET_CHANNEL_LIMIT) || 1000;
     config.confFilePath = env.CONF_FILE_PATH || "/../gs-env/abstract.conf";
+    config.rabbitmq = {
+        host: env.RABBIT_MQ_HOST || '52.5.151.198',
+        port: env.RABBIT_MQ_PORT || 5672,
+        login: env.RABBIT_MQ_USERNAME || "abstract",
+        password: env.RABBIT_MQ_PWD || "617EC7A6-60F8-4C2E-ADF1-667D0905D6D2",
+        vhost: env.RABBIT_MQ_VHOST || "vabstract",
+    };
     if(config.confFilePath){
         try{
             properties = PropertiesReader(process.cwd() + config.confFilePath);

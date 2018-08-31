@@ -9,6 +9,7 @@
     }
   ],
   "dependencies": {
+    "amqp": "^0.2.7",
     "base-64": "^0.1.0",
     "body-parser": "^1.18.3",
     "bunyan": "^1.8.12",

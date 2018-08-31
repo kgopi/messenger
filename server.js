@@ -26,7 +26,8 @@ const options = {
   rebootWorkerOnCrash: false,
   wsEngineServerOptions: {
     path: '/'
-  }
+  },
+  rabbitmq: config.rabbitmq
 };
 
 var start = function () {
