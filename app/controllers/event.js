@@ -6,7 +6,7 @@ function inactivate(req, res, next){
         const EventsModel = ModelFactory.getEventsModel(req.headers.tenantId);
         EventsModel.findByIdAndUpdate(id, { visited: true }, null, (err)=>{
             if(err){
-                consloe.error(`Failed to update the event ${id}`, err);
+                console.error(`Failed to update the event ${id}`, err);
             }else{
                 console.info(`Successfully updated the event ${id}`);
             }

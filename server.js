@@ -6,6 +6,9 @@ var SocketCluster = require('socketcluster');
 
 const env = require("node-env-file");
 env("./.env");
+
+console.log(process.env);
+
 const config = require("./config").configure(process.env);
 
 var argv = require('minimist')(process.argv.slice(2));
@@ -23,7 +26,7 @@ const options = {
   brokerController,
   socketChannelLimit: config.socketChannelLimit,
   environment: config.environment,
-  rebootWorkerOnCrash: false,
+  rebootWorkerOnCrash: true,
   wsEngineServerOptions: {
     path: '/'
   },

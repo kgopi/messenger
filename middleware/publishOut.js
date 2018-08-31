@@ -10,9 +10,9 @@ function getSettings({userId, tenantId}, cb){
 }
 
 function eligibleForInAppNotifications(settings, data){
-  if(settings.global.inAppSettings.enabled){
+  if(settings.global.inApp.enabled){
     settings.user && (settings = Object.assign(settings.global, settings.user));
-    if(settings.inAppSettings.areas[data.area.toLowerCase()]){
+    if(settings.inApp.areas[data.area.toLowerCase()]){
       return true;
     }else{
       console.log(`Inapp notifications are disabled for area ${data.area.toLowerCase()}, user ${data.userId}`);
