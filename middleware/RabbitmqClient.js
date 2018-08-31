@@ -16,6 +16,7 @@ module.exports.attach = function (broker) {
     resetErrorHandler(rabbitClient);
     var rabbitQueue = rabbitClient.queue('', {exclusive: true});
     rabbitExchange.destroy();
+    console.log("Channel exchange is destroyed");
   };
 
   var queueMap = {};
@@ -30,6 +31,7 @@ module.exports.attach = function (broker) {
             rabbitQueue.bind(rabbitExchange, '');
             rabbitQueue.subscribe(function (packet) {
               if (packet && packet.instanceId != instanceId) {
+                console.info(`Publishing an event (${channelName}) to other brokers`);
                 broker.publish(channelName, packet.data);
               }
             })
@@ -41,11 +43,13 @@ module.exports.attach = function (broker) {
       destroyChannelExchange(channelName);
     });
     broker.on('publish', function (channelName, data) {
+      console.info(`Broker received a publish event (${channelName})`);
       var packet = {
         instanceId: instanceId,
         data: data
       };
       rabbitClient.exchange(channelName, {type: 'fanout', durable: true, autoDelete: false}, function (rabbitExchange) {
+        console.info(`Publishing event (${channelName}) to rabbitmq by broker ${instanceId}`);
         rabbitExchange.publish('', packet, {
           contentType: 'application/json'
         });
