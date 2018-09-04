@@ -17,7 +17,7 @@ module.exports = {
     },
     update: (req, res, next)=>{
         Settings.updateUserSettings({userId: req.headers.userId, tenantId: req.headers.tenantId}, req.body).then((doc)=>{
-            res.status(201).json({result: true, data: doc});
+            res.status(200).json({result: true, data: doc});
         }).catch(err=>{
             next(new BaseError(400, `Failed to update notification settings for ${req.headers.userId}`, err));
         });
