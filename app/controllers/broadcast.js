@@ -2,8 +2,8 @@ const cryptor = require("./../utils/encryption");
 const ModelFactory = require("./../../app/db/models");
 
 function broadcastEvent (req, res, next) {
-    if(req.body && req.body[0]){
-        const data = req.body[0];
+    if(req.body){
+        const data = Array.isArray(req.body) ? req.body[0] : req.body;
         const EventsModel = ModelFactory.getEventsModel(req.headers.tenantId);
         new EventsModel({
             command: data.command,
@@ -28,7 +28,7 @@ function broadcastEvent (req, res, next) {
         }
         res.status(200).json({result: true});
     }else{
-        console.log("Nothing to broadcast");
+        console.log("Invalid body, nothing to broadcast", req.body);
         res.status(400).json({result: false, message: "Invalid body, nothing to broadcast"});
     }
     next();

@@ -7,7 +7,7 @@ module.exports = {
             config.dbURI, {
                 keepAlive: true, 
                 keepAliveInitialDelay: 300000,
-                poolSize: 1,
+                poolSize: 4,
                 socketTimeoutMS: 0,
                 reconnectTries: 30,
                 useNewUrlParser: true

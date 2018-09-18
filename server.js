@@ -4,11 +4,6 @@ var fsUtil = require('socketcluster/fsutil');
 var waitForFile = fsUtil.waitForFile;
 var SocketCluster = require('socketcluster');
 
-const env = require("node-env-file");
-env("./.env");
-
-console.log(process.env);
-
 const config = require("./config").configure(process.env);
 
 var argv = require('minimist')(process.argv.slice(2));

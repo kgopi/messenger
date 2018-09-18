@@ -12,14 +12,15 @@ function getSettings({userId, tenantId}, cb){
 function eligibleForInAppNotifications(settings, data){
   if(settings.global.inApp.enabled){
     settings.user && (settings = Object.assign(settings.global, settings.user));
-    if(settings.inApp.areas[data.area.toLowerCase()]){
+    let isEnabled = settings.inApp.areas[data.area.toLowerCase()];
+    if(typeof isEnabled == "undefined" || isEnabled){
       return true;
     }else{
-      console.log(`Inapp notifications are disabled for area ${data.area.toLowerCase()}, user ${data.userId}`);
+      console.log(`Inapp notifications are disabled for area ${data.area.toLowerCase()}, user ${settings.userId}`);
       return false;
     }
   }else{
-    console.log(`Inapp notifications are disabled for user ${data.userId}`);
+    console.log(`Inapp notifications are disabled for user ${settings.userId}`);
     return false;
   }
 }
