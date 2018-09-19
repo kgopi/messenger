@@ -41,6 +41,7 @@
     "serve-static": "1.13.2",
     "socketcluster": "^14.0.4",
     "socketcluster-client": "^13.0.1",
+    "sql": "^0.78.0",
     "sticky-session": "^1.1.2",
     "urltree": "^0.5.1",
     "utf8": "^3.0.0",
@@ -55,6 +56,14 @@
   ],
   "readmeFilename": "README.md",
   "scripts": {
-    "start": "node server.js"
+    "compile": "tsc -w -p .",
+    "start": "node ./dist/src/server.js",
+    "dev": "npm run compile && npm run start"
+  },
+  "devDependencies": {
+    "@types/node": "^10.10.1",
+    "es6-promise": "^4.2.5",
+    "nodemon": "^1.18.4",
+    "typescript": "^3.0.3"
   }
 }
