@@ -14,10 +14,10 @@ export function initConfig(env) {
         host: env.RABBIT_MQ_HOST || '52.5.151.198',
         port: env.RABBIT_MQ_PORT || 5672,
         login: env.RABBIT_MQ_USERNAME || "abstract",
-        password: env.RABBIT_MQ_PWD || "617EC7A6-60F8-4C2E-ADF1-667D0905D6D2",
+        password: env.RABBIT_MQ_PWDl,
         vhost: env.RABBIT_MQ_VHOST || "vabstract",
     };
-    _config.dbURI = env.PGSQL_DB_CONNECTION_URL || `postgres://awsuser:1SIIlNphlXxH@ops1871.cx9sqcdf0xx8.us-east-1.rds.amazonaws.com:5432/messenger`;
+    _config.dbURI = env.PGSQL_DB_CONNECTION_URL;
     _config.minDBConnections = env.PGSQL_DB_MIN_CONNECTIONS || 1;
     _config.maxDBConnections = env.PGSQL_DB_MAX_CONNECTIONS || 2;
     return config = _config;
