@@ -10,19 +10,16 @@ function getJwtToken({tenantId, userId}){
   });
 }
 
-function getAuthToken (req, res, next) {
+export function getAuthToken (req, res, next) {
 
   if(req.headers.requestinfo == null){
     next("Invalid request, requestinfo is must");
   }
 
-  const requestInfo = JSON.parse(cryptor.decrypt(req.headers.requestinfo));
   const token = getJwtToken({
-    userId: requestInfo.gsUserAuthInfo.userId,
-    tenantId: requestInfo.tenantAuthInfo.tenantId
+    userId: req.headers.userId,
+    tenantId: req.headers.tenantId,
   });
   res.status(200).json({token});
   next();
 }
-  
-module.exports = getAuthToken;

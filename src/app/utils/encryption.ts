@@ -106,4 +106,5 @@ var tester1 =  function() {
 
 };
 
+debugger;
 export default new DefaultCryptor(config.mdaSecretKeyPassword);

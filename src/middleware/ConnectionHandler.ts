@@ -28,7 +28,7 @@ function processRequest(client, req){
     );
 }
 
-module.exports = function(client) {
+export default function(client) {
     var req = client.request;
     console.log(`${new Date()} connection from origin ${req.headers.origin} with id ${client.id}.`);
     processRequest(client, req);

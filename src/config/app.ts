@@ -5,8 +5,9 @@ import * as hrefs from "./../app/utils/href";
 import bodyLogger from "./../app/utils/middleware/bodyLogger";
 import errorHandler from "./../app/utils/middleware/error";
 import * as logger from "./../app/utils/logger";
+import {routes} from "./../app/routes";
 
-function configure(app, config) {
+export function configureApp(app, config) {
 
     hrefs.configure(config.apiHost, 'messenger');
 
@@ -25,8 +26,5 @@ function configure(app, config) {
     app.use(require('errorhandler')());
     app.use(errorHandler);
 
-    require('../app/routes')(app);
-}
-  
-  module.exports = configure;
-  
+    routes(app);
+}  

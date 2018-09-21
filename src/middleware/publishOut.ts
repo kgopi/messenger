@@ -27,7 +27,7 @@ function eligibleForInAppNotifications(settings, data){
   }
 }
 
-module.exports = (req, next) => {
+export function PublishOutHandler(req, next) {
     const targetUserId = req.socket.userId;
     const notifierUserId = req.data.userId;
 

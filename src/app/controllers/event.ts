@@ -1,23 +1,33 @@
-var ModelFactory:any;
+import {EventService} from "./../services/event";
 
-function inactivate(req, res, next){
-    const id = req.params.id;
-    if(id){
-        const EventsModel = ModelFactory.getEventsModel(req.headers.tenantId);
-        EventsModel.findByIdAndUpdate(id, { visited: true }, null, (err)=>{
-            if(err){
-                console.error(`Failed to update the event ${id}`, err);
-            }else{
-                console.info(`Successfully updated the event ${id}`);
-            }
-        })
-        res.status(200).json({result: true});
-    }else{
-        res.status(400).json({result: false, message: "Invalid request, event id is must."});
+export module EventsController{
+    export function makeItRead(req, res, next){
+        const eventId = req.params.id,
+            readOn = req.params.readOn,
+            readVia = req.params.readVia,
+            tenantId = req.headers.tenantId;
+        if(eventId){
+            EventService.makeItRead({eventId, readOn, readVia, tenantId, callback: (err, data)=>{
+                if(err){
+                    res.status(501).json({result: false, message: `Failed to update the event, reason: ${err.message}`});
+                }else{
+                    res.status(200).json({result: true});
+                }
+            }});
+        }else{
+            res.status(400).json({result: false, message: "Invalid request, event id is must."});
+        }
+        next();
     }
-    next();
-}
 
-module.exports = {
-    inactivate: inactivate
+    export function list(req, res, next){
+        EventService.list({tenantId: req.headers.tenantId, userId: req.headers.userId, callback: (err, data)=>{
+            if(err){
+                res.status(501).json({result: false, message: `Failed to update the event, reason: ${err.message}`});
+            }else{
+                res.status(200).json(data);
+            }
+        }});
+        next();
+    }
 }

@@ -3,7 +3,7 @@ const config = require("./../config");
 const cryptor = require("./../app/utils/encryption");
 const jwt = require("jsonwebtoken");
 
-module.exports = function VerifyClient(scServerSocket, cb){
+export function VerifyClient(scServerSocket, cb){
     let req = scServerSocket.socket.request;
     let query = url.parse(req.url, true).query;
 

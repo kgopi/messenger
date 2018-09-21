@@ -10,6 +10,8 @@
   ],
   "dependencies": {
     "amqp": "^0.2.7",
+    "any-db": "^2.2.1",
+    "any-db-postgres": "^2.1.5",
     "base-64": "^0.1.0",
     "body-parser": "^1.18.3",
     "bunyan": "^1.8.12",
@@ -31,6 +33,7 @@
     "morgan": "1.7.0",
     "node-env-file": "^0.1.8",
     "node-uuid": "^1.4.8",
+    "pg": "^7.4.3",
     "properties-reader": "0.0.16",
     "querystring": "^0.2.0",
     "response-time": "^2.3.2",
@@ -57,10 +60,11 @@
   "readmeFilename": "README.md",
   "scripts": {
     "compile": "tsc -w -p .",
-    "start": "node ./dist/src/server.js",
+    "start": "node ./dist/src/server.js --inspect-workers",
     "dev": "npm run compile && npm run start"
   },
   "devDependencies": {
+    "@types/any-db": "^2.1.30",
     "@types/node": "^10.10.1",
     "es6-promise": "^4.2.5",
     "nodemon": "^1.18.4",

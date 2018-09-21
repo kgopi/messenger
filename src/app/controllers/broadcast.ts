@@ -1,24 +1,27 @@
-// import ModelFactory from "./../models";
-
-declare var ModelFactory:any;
+import {EventService} from "./../services/event";
 
 function broadcastEvent (req, res, next) {
     if(req.body){
         const data = Array.isArray(req.body) ? req.body[0] : req.body;
-        const EventsModel = ModelFactory.getEventsModel(req.headers.tenantId);
-        new EventsModel({
-            command: data.command,
-            area: data.area,
+        EventService.insert({
             tenantId: req.headers.tenantId,
-            userName: data.userName,
-            userId: data.userId,
-            targetUsers: (data.filters && data.filters.users) || [],
-            data: data.data,
-            visited: false
-         }).save(function(err){
-            if(err){
-                console.log("Failed to persist the event", err);
-            } 
+            params:{
+                command: data.command,
+                area: data.area,
+                tenantId: req.headers.tenantId,
+                userName: data.userName,
+                userId: data.userId,
+                targetUsers: (data.filters && data.filters.users) || [],
+                data: data.data,
+                visited: false
+            },
+            callback: (err, data)=>{
+                if(err){
+                    console.log("Failed to persist the event", err);
+                }else{
+                    console.log(`Successfully inserted the event record ${data.id}.`);
+                }
+            }
         });
         if(data.filters && data.filters.users){
             data.filters.users.forEach(userId => {

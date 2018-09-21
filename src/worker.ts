@@ -2,8 +2,11 @@ import SCWorker = require("socketcluster/scworker");
 import * as express from "express";
 import * as morgan from "morgan";
 import * as healthChecker from "sc-framework-health-check";
-import {configure} from "./config";
-const config = configure(process.env);
+import {configureApp} from "./config/app";
+import {initConfig} from "./config";
+import {default as ConnectionHandler} from "./middleware/ConnectionHandler";
+import {VerifyClient} from "./middleware/VerifyClinent";
+import {PublishOutHandler} from "./middleware/publishOut";
 
 class Worker extends SCWorker {
 
@@ -18,11 +21,10 @@ class Worker extends SCWorker {
           httpServer = this.httpServer, 
           scServer = this.scServer;
 
-      // Configure the app based on config including Middleware
-      require('./config/app')(app, config);
+      const config = initConfig(process.env);
 
-      // DB
-      require("./app/db").connect();
+      // Configure the app based on config including Middleware
+      configureApp(app, config);
 
       // http
       if (environment === 'dev') {
@@ -32,9 +34,9 @@ class Worker extends SCWorker {
       httpServer.on('request', app);
 
       // ws
-      scServer.on('connection', require("./middleware/ConnectionHandler"));
-      scServer.addMiddleware(scServer.MIDDLEWARE_HANDSHAKE_SC, require("./middleware/VerifyClinent"));
-      scServer.addMiddleware(scServer.MIDDLEWARE_PUBLISH_OUT, require("./middleware/publishOut"));
+      scServer.on('connection', ConnectionHandler);
+      scServer.addMiddleware(scServer.MIDDLEWARE_HANDSHAKE_SC, VerifyClient);
+      scServer.addMiddleware(scServer.MIDDLEWARE_PUBLISH_OUT, PublishOutHandler);
   }
 }
 

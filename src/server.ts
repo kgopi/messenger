@@ -4,8 +4,8 @@ var fsUtil = require('socketcluster/fsutil');
 var waitForFile = fsUtil.waitForFile;
 var SocketCluster = require('socketcluster');
 
-import {configure} from "./config";
-const config = configure(process.env);
+import {initConfig} from "./config";
+const config = initConfig(process.env);
 
 var argv = require('minimist')(process.argv.slice(2));
 

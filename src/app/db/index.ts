@@ -1,24 +1,49 @@
-import mongoose = require("mongoose");
+import * as anyDb from 'any-db';
+import * as pg from 'pg';
 import {config} from "./../../config";
 
-module.exports = {
-    connect: function(cb){
-        mongoose.connect(
-            config.dbURI, {
-                keepAlive: true, 
-                keepAliveInitialDelay: 300000,
-                poolSize: 4,
-                socketTimeoutMS: 0,
-                reconnectTries: 30,
-                useNewUrlParser: true
-            }, function(err) {
-                if(err){
-                    console.error("DB connection failed", err);
-                }else{
-                    console.log("Mongo DB connection successfull");
-                }
-                cb && cb.call(arguments);
-            }
-        );
+const connections:Map<String, anyDb.ConnectionPool> = new Map();
+
+// Required to avoid double conversion (date)
+const types = pg.types;
+const timestampOID = 1114;
+types.setTypeParser(timestampOID, function(stringValue) {
+    return stringValue;
+});
+
+export module db{
+
+    function parseTenantId(tenantId:string){
+        return tenantId.replace(/_/g, '');
     }
-}
+
+    export function connect(tenantId:string):anyDb.ConnectionPool {
+
+        tenantId = parseTenantId(tenantId);
+
+        if(connections.get(tenantId)){
+            return connections[tenantId];
+        }
+
+        let connection = anyDb.createPool(`${config.dbURI}_${tenantId}`, {
+            min: config.minDBConnections,
+            max: config.maxDBConnections
+        });
+
+        connections.set(tenantId, connection);
+
+        return connection;
+    }
+
+    export function disconnect(tenantId, callback) {
+        
+         tenantId = parseTenantId(tenantId);
+
+        if(tenantId && connections.get(tenantId)) {
+            connections.get(tenantId).close(function() {
+                connections.delete(tenantId);
+                callback();
+            });
+        }
+    }
+};
