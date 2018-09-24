@@ -1,15 +1,9 @@
 -- ----------------------------
---  Sequence structure for event_id_seq
--- ----------------------------
-DROP SEQUENCE IF EXISTS "id_seq" CASCADE;
-CREATE SEQUENCE "id_seq" INCREMENT 1 START 2 MAXVALUE 9223372036854775807 MINVALUE 1 CACHE 1;
-
--- ----------------------------
 --  Table structure for event
 -- ----------------------------
 DROP TABLE IF EXISTS "event" CASCADE;
 CREATE TABLE "event" (
-	"id" int8 NOT NULL DEFAULT nextval('id_seq'::regclass) PRIMARY KEY,
+	"id" BIGSERIAL PRIMARY KEY,
 	"area" varchar(50) NOT NULL,
     "name" varchar(50) NOT NULL,
     "actor_id" varchar(36) NOT NULL,
@@ -20,6 +14,7 @@ CREATE TABLE "event" (
     "body" text COLLATE "default",
     "data" text COLLATE "default",
     "reply_to_email" varchar(250),
+    "entity_id" varchar(50),
 	"created_date" timestamp(6) NOT NULL DEFAULT now()
 )
 WITH (OIDS=FALSE);
@@ -29,7 +24,7 @@ WITH (OIDS=FALSE);
 -- ----------------------------
 DROP TABLE IF EXISTS "user_event_mapping" CASCADE;
 CREATE TABLE "user_event_mapping" (
-    "id" int8 NOT NULL DEFAULT nextval('id_seq'::regclass) PRIMARY KEY,
+    "id" BIGSERIAL PRIMARY KEY,
 	"event_id" int8 NOT NULL REFERENCES "event" (id),
     "user_id" varchar(36) NOT NULL,
     "is_read" bool DEFAULT false,
@@ -39,6 +34,18 @@ CREATE TABLE "user_event_mapping" (
     "is_email_delivered" bool DEFAULT false,
     "email_message_id" varchar(60),
     UNIQUE("event_id", "user_id")
+)
+WITH (OIDS=FALSE);
+
+-- ----------------------------
+--  Table structure for user_entity_subscription
+-- ----------------------------
+DROP TABLE IF EXISTS "user_entity_subscription" CASCADE;
+CREATE TABLE "user_entity_subscription" (
+    "user_id" varchar(36) NOT NULL,
+    "entity_id" varchar(50) NOT NULL,
+    "entity_name" varchar(50) NOT NULL,
+    UNIQUE("user_id", "entity_id")
 )
 WITH (OIDS=FALSE);
 

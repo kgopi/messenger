@@ -4,7 +4,7 @@ const sql = require('sql');
 /**
  * SQL definition for public.event
  */
-export var Event = sql.define({
+export const Event = sql.define({
         name: 'event',
         columns: [
                 { name: 'id', property: 'id' },
@@ -18,6 +18,7 @@ export var Event = sql.define({
                 { name: 'body', property: 'body' },
                 { name: 'data', property: 'data' },
                 { name: 'reply_to_email', property: 'replyToEmail' },
+                { name: 'entity_id', property: 'entityId' },
                 { name: 'created_date', property: 'createdDate' }
         ]
 });
@@ -26,7 +27,7 @@ export var Event = sql.define({
 /**
  * SQL definition for public.preferences
  */
-export var Preferences = sql.define({
+export const Preferences = sql.define({
         name: 'preferences',
         columns: [
                 { name: 'user_id', property: 'userId' },
@@ -37,9 +38,22 @@ export var Preferences = sql.define({
 
 
 /**
+ * SQL definition for public.user_entity_subscription
+ */
+export const UserEntitySubscription = sql.define({
+        name: 'user_entity_subscription',
+        columns: [
+                { name: 'user_id', property: 'userId' },
+                { name: 'entity_id', property: 'entityId' },
+                { name: 'entity_name', property: 'entityName' }
+        ]
+});
+
+
+/**
  * SQL definition for public.user_event_mapping
  */
-export var UserEventMapping = sql.define({
+export const UserEventMapping = sql.define({
         name: 'user_event_mapping',
         columns: [
                 { name: 'id', property: 'id' },
