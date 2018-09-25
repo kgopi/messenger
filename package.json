@@ -12,6 +12,7 @@
     "amqp": "^0.2.7",
     "any-db": "^2.2.1",
     "any-db-postgres": "^2.1.5",
+    "any-db-transaction": "^2.2.2",
     "base-64": "^0.1.0",
     "body-parser": "^1.18.3",
     "bunyan": "^1.8.12",

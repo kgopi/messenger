@@ -29,8 +29,8 @@ CREATE TABLE "user_event_mapping" (
     "user_id" varchar(36) NOT NULL,
     "is_read" bool DEFAULT false,
 	"email" varchar(250) NOT NULL,
-    "read_via" int2 NOT NULL,
-    "read_on" timestamp(6) NOT NULL,
+    "read_via" int2,
+    "read_on" timestamp(6),
     "is_email_delivered" bool DEFAULT false,
     "email_message_id" varchar(60),
     UNIQUE("event_id", "user_id")

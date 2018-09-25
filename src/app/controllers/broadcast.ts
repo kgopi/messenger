@@ -1,20 +1,29 @@
 import {EventService} from "./../services/event";
 
-function broadcastEvent (req, res, next) {
+function getParams(req, data){
+    return {
+        tenantId: req.headers.tenantId,
+        area: data.area,
+        name: data.name,
+        actorId: data.actorId,
+        actorName: data.actorName,
+        isHighPriority: data.isHighPriority || true,
+        timeToLive: data.timeToLive,
+        title: data.title,
+        body: data.body,
+        data: data.data,
+        replyToEmail: data.replyToEmail,
+        entityId: data.entityId,
+        to: data.to || []
+    };
+}
+
+export default (req, res, next) => {
     if(req.body){
         const data = Array.isArray(req.body) ? req.body[0] : req.body;
         EventService.insert({
             tenantId: req.headers.tenantId,
-            params:{
-                command: data.command,
-                area: data.area,
-                tenantId: req.headers.tenantId,
-                userName: data.userName,
-                userId: data.userId,
-                targetUsers: (data.filters && data.filters.users) || [],
-                data: data.data,
-                visited: false
-            },
+            params: getParams(req, data),
             callback: (err, data)=>{
                 if(err){
                     console.log("Failed to persist the event", err);
@@ -37,5 +46,3 @@ function broadcastEvent (req, res, next) {
     }
     next();
 }
-    
-module.exports = broadcastEvent;
