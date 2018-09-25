@@ -21,9 +21,9 @@ export function routes(app) {
 
     router.route(urls.token.toString()).get(getAuthToken);
     router.route(urls.list.toString()).get(EventsController.list);
-    router.route(urls.subscribe2Entity.toString()).get(PreferencesController.subscribe2Entity);
-    router.route(urls.unsubscribe2Entity.toString()).get(PreferencesController.unSubscribe2Entity);
-    router.route(urls.subscribe2Event.toString()).get(PreferencesController.subscribe2Event);
+    router.route(urls.subscribe2Entity.toString()).post(PreferencesController.subscribe2Entity);
+    router.route(urls.unsubscribe2Entity.toString()).post(PreferencesController.unSubscribe2Entity);
+    router.route(urls.subscribe2Event.toString()).post(PreferencesController.subscribe2Event);
     router.route(urls.unsubscribe2Event.toString()).post(PreferencesController.unSubscribe2Event);
     router.route(urls.preferences.toString()).get(PreferencesController.getUserPreferences);
     router.route(urls.broadcast.toString()).post(BroadCast);

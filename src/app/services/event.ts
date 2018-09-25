@@ -57,8 +57,8 @@ export module EventService{
         var query = Event.select(Event.star())
                          .from(Event.join(UserEventMapping).on(Event.id.equals(UserEventMapping.eventId)))
                          .where(UserEventMapping.isRead.equals(false).and(UserEventMapping.userId.equals(userId)))
-                         .limit(100)
                          .order(Event.createdDate.desc)
+                         .limit(100)
                          .toQuery();
         db.connect(tenantId).query(query.text, query.values, callback);
     }

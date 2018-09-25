@@ -4,6 +4,11 @@ import * as defaultPreferences from "./../../config/default_user_preferences";
 
 export module PreferencesService{
 
+    function rawInsert({tenantId, params, userId, callback}){
+        const query = Preferences.insert(params).returning(Preferences.start()).toQuery();
+        db.connect(tenantId).query(query.text, query.values, callback);
+    }
+
     function rawUpdate({tenantId, params, userId, callback}){
         const query = Preferences.update(params).where(Preferences.userId.equals(userId)).returning(Preferences.start()).toQuery();
         db.connect(tenantId).query(query.text, query.values, callback);
@@ -18,7 +23,7 @@ export module PreferencesService{
                 if(res.rows[0]){
                     callback(err, res);
                 }else{
-                    rawUpdate({tenantId, params: defaultPreferences, userId, callback});
+                    rawInsert({tenantId, params: defaultPreferences, userId, callback});
                 }
             }
         });

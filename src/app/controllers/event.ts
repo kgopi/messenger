@@ -9,15 +9,16 @@ export module EventsController{
         if(eventId){
             EventService.makeItRead({eventId, readOn, readVia, tenantId, callback: (err, data)=>{
                 if(err){
-                    res.status(501).json({result: false, message: `Failed to update the event, reason: ${err.message}`});
+                    res.status(400).json({result: false, message: `Failed to update the event, reason: ${err.message}`});
                 }else{
                     res.status(200).json({result: true});
                 }
+                next();
             }});
         }else{
             res.status(400).json({result: false, message: "Invalid request, event id is must."});
+            next();
         }
-        next();
     }
 
     export function list(req, res, next){
@@ -25,9 +26,9 @@ export module EventsController{
             if(err){
                 res.status(400).json({result: false, message: `Failed to query the events, reason: ${err.message}`});
             }else{
-                res.status(200).json(data);
+                res.status(200).json(data.rows);
             }
+            next();
         }});
-        next();
     }
 }

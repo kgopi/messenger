@@ -22,10 +22,10 @@ export module db{
         tenantId = parseTenantId(tenantId);
 
         if(connections.get(tenantId)){
-            return connections[tenantId];
+            return connections.get(tenantId);
         }
 
-        let connection = anyDb.createPool(`${config.dbURI}_${tenantId}`, {
+        let connection = anyDb.createPool(`${config.dbURI}`, {
             min: config.minDBConnections,
             max: config.maxDBConnections
         });
