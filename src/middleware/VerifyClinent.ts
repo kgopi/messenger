@@ -1,6 +1,6 @@
 const url = require('url');
-const config = require("./../config");
-const cryptor = require("./../app/utils/encryption");
+import {config} from "./../config";
+import {default as cryptor} from "./../app/utils/encryption";
 const jwt = require("jsonwebtoken");
 
 export function VerifyClient(scServerSocket, cb){

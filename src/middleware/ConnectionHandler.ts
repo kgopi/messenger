@@ -1,4 +1,5 @@
 import url = require("url");
+import {EventService} from "./../app/services/event";
 
 function CloseHandler(origin){
     return function(){
@@ -15,17 +16,18 @@ function processRequest(client, req){
     const tenantId = client.tenantId = req.headers.tenantId;
     client.userId = req.headers.userId;
     console.log(`Tenant ${tenantId} successfully registered for client ${client.id}`);
-    require("./../app/db/models").getEventsModel(tenantId).find(
-        {$or: [ {"targetUsers": { $size: 0 } }, {"targetUsers": {$in: [client.userId]} } ] },
-        function (err, docs) {
+    EventService.list({
+        tenantId, 
+        userId:client.userId, 
+        callback: (err, result)=>{
             if(err){
                 console.log("Failed to query notification on onnection", err);
             }else{
-                client.emit("messages", docs.map((model)=>{return model._doc}));
+                client.emit("messages", result.rows);
                 console.log(`Successfully notified the messeages for user: ${client.userId}`);
             }
         }
-    );
+    });
 }
 
 export default function(client) {

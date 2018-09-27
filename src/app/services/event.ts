@@ -55,7 +55,7 @@ export module EventService{
     
     export function list({tenantId, userId, callback}){
         var query = Event.select(Event.star())
-                         .from(Event.join(UserEventMapping).on(Event.id.equals(UserEventMapping.eventId)))
+                         .from(Event.leftJoin(UserEventMapping).on(Event.id.equals(UserEventMapping.eventId)))
                          .where(UserEventMapping.isRead.equals(false).and(UserEventMapping.userId.equals(userId)))
                          .order(Event.createdDate.desc)
                          .limit(100)
