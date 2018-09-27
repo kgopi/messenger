@@ -1,21 +1,22 @@
 import {Preferences} from "../db/models";
 import {db} from "../db";
-import * as defaultPreferences from "./../../config/default_user_preferences";
+import * as _ from 'lodash';
+import {default as defaultPreferences} from "./../../config/default_user_preferences";
 
 export module PreferencesService{
 
     function rawInsert({tenantId, params, userId, callback}){
-        const query = Preferences.insert(params).returning(Preferences.start()).toQuery();
+        const query = Preferences.insert(params).returning(Preferences.star()).toQuery();
         db.connect(tenantId).query(query.text, query.values, callback);
     }
 
     function rawUpdate({tenantId, params, userId, callback}){
-        const query = Preferences.update(params).where(Preferences.userId.equals(userId)).returning(Preferences.start()).toQuery();
+        const query = Preferences.update(params).where(Preferences.userId.equals(userId)).returning(Preferences.star()).toQuery();
         db.connect(tenantId).query(query.text, query.values, callback);
     }
     
-    export function get({tenantId, userId, callback}){
-        var query = Preferences.get(Preferences.star()).where(Preferences.userId.equals(userId)).toQuery();
+    export function get({tenantId, userId, callback}, defaults?:any){
+        var query = Preferences.select(Preferences.star()).where(Preferences.userId.equals(userId)).toQuery();
         db.connect(tenantId).query(query.text, query.values, (err, res)=>{
             if(err){
                 callback(err);
@@ -23,7 +24,8 @@ export module PreferencesService{
                 if(res.rows[0]){
                     callback(err, res);
                 }else{
-                    rawInsert({tenantId, params: defaultPreferences, userId, callback});
+                    let params = _.merge({userId, isAdmin: false, data: defaultPreferences}, defaults);
+                    rawInsert({tenantId, params, userId, callback});
                 }
             }
         });
@@ -34,11 +36,10 @@ export module PreferencesService{
             if(err){
                 callback(err);
             }else{
-                const {data} = res.rows[0];
-                Object.assign(params, data);
-                rawUpdate({tenantId, params, userId, callback});
+                const exsistingData = res.rows[0];
+                rawUpdate({tenantId, params: _.merge(exsistingData, params), userId, callback});
             }
-        }});
+        }}, params);
     }
 
 }

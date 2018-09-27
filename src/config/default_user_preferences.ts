@@ -1,4 +1,4 @@
-export const defaultPreferences = {
+export default {
     "email" : {
         "enabled" : false,
         "areas" : {

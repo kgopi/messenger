@@ -42,10 +42,10 @@ export module PreferencesController{
     }
 
     function getEventServiceParams(req, isSubscribed){
-        const params = {};
-        params[req.params.media] = {"areas": {}};
-        params[req.params.media]["areas"][req.params.area] = {};
-        params[req.params.media]["areas"][req.params.area][req.params.event] = isSubscribed;
+        const params = {userId: req.headers.userId, data: {}, isAdmin: req.headers.isAdmin || false};
+        params.data[req.params.media] = {"areas": {}};
+        params.data[req.params.media]["areas"][req.params.area] = {};
+        params.data[req.params.media]["areas"][req.params.area][req.params.eventName] = isSubscribed;
         return params;
     }
 
@@ -56,7 +56,7 @@ export module PreferencesController{
             params: getEventServiceParams(req, true),
             callback: (err, result)=>{
                 if(err){
-                    req.log.debug(`Failed to subscribe to ${req.params.event} event`, err);
+                    req.log.debug(`Failed to subscribe to ${req.params.eventName} event`, err);
                     res.status(400).json({err});
                 }else{
                     res.status(200).json(result.rows[0]);

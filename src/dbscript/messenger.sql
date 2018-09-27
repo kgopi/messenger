@@ -12,7 +12,7 @@ CREATE TABLE "event" (
 	"time_to_live" int2 DEFAULT 365,
     "title" varchar(4000) COLLATE "default",
     "body" text COLLATE "default",
-    "data" text COLLATE "default",
+    "data" json,
     "reply_to_email" varchar(250),
     "entity_id" varchar(50),
 	"created_date" timestamp(6) NOT NULL DEFAULT now()
@@ -56,6 +56,6 @@ DROP TABLE IF EXISTS "preferences" CASCADE;
 CREATE TABLE "preferences" (
     "user_id" varchar(36) NOT NULL UNIQUE,
     "is_admin" bool DEFAULT false,
-    "data" text COLLATE "default"
+    "data" json
 )
 WITH (OIDS=FALSE);
