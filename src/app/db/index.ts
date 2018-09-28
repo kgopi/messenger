@@ -8,7 +8,7 @@ const connections:Map<String, anyDb.ConnectionPool> = new Map();
 const types = pg.types;
 const timestampOID = 1114;
 types.setTypeParser(timestampOID, function(stringValue) {
-    return stringValue;
+    return stringValue ? new Date(stringValue).getTime() : stringValue;
 });
 
 export module db{

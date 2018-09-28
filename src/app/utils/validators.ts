@@ -7,7 +7,6 @@ module Validators{
     
     export module Event{
         export function validate(req, res, next):boolean{
-            debugger;
             let body = Array.isArray(req.body) ? req.body[0] : req.body;
             const missingProps = [];
             

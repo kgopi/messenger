@@ -32,8 +32,8 @@ export default (req, res, next) => {
         }
     });
     if(params.to.length > 0){
-        params.to.forEach(userId => {
-            req.exchange.publish(`broadcast/${req.headers.tenantId}/${userId}`, params);
+        params.to.forEach(user => {
+            req.exchange.publish(`broadcast/${req.headers.tenantId}/${user.id}`, params);
         });
     }else{
         req.exchange.publish(`broadcast/${req.headers.tenantId}`, params);

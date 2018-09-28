@@ -9,7 +9,7 @@ CREATE TABLE "event" (
     "actor_id" varchar(36) NOT NULL,
     "actor_name" varchar(255) NOT NULL,
     "is_high_priority" bool DEFAULT true,
-	"time_to_live" int2 DEFAULT 365,
+	"time_to_live" int2 DEFAULT 70,
     "title" varchar(4000) COLLATE "default",
     "body" text COLLATE "default",
     "data" json,
