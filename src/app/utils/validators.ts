@@ -19,7 +19,8 @@ module Validators{
             _.isEmpty(body.actorId) && missingProps.push('actorId');
             _.isEmpty(body.actorName) && missingProps.push('actorName');
             _.isEmpty(body.title) && missingProps.push('title');
-            _.isEmpty(body.body) && missingProps.push('body');
+            _.isEmpty(body.bodyHtml) && missingProps.push('bodyHtml');
+            _.isEmpty(body.bodyText) && missingProps.push('bodyText');
             _.isEmpty(body.entityId) && missingProps.push('entityId');
 
             if(missingProps.length > 0){

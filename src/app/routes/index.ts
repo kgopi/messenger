@@ -19,7 +19,7 @@ export function routes(app) {
 
     // enable cors preflight for all endpoints
     router.options('*', cors());
-
+    
     router.route(urls.token.toString()).get(getAuthToken);
     router.route(urls.list.toString()).get(EventsController.list);
     router.route(urls.subscribe2Entity.toString()).post(PreferencesController.subscribe2Entity);

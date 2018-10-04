@@ -1,4 +1,5 @@
 import {EventService} from "./../services/event";
+import EmailServices from "../services/email";
 
 function getParams(req, data){
     return {
@@ -9,7 +10,8 @@ function getParams(req, data){
         isHighPriority: data.isHighPriority || true,
         timeToLive: data.timeToLive || 365,
         title: data.title,
-        body: data.body,
+        bodyHtml: data.bodyHtml,
+        bodyText: data.bodyText,
         data: data.data || {},
         replyToEmail: data.replyToEmail,
         entityId: data.entityId,
@@ -33,11 +35,20 @@ export default (req, res, next) => {
     });
     if(params.to.length > 0){
         params.to.forEach(user => {
+            const msg = {
+                to: user.email,
+                from: 'no-reply@gainsight.com',
+                subject: params.title,
+                text: params.bodyText,
+                html: params.bodyHtml,
+            };
+            EmailServices.send(msg);
             req.exchange.publish(`broadcast/${req.headers.tenantId}/${user.id}`, params);
         });
     }else{
         req.exchange.publish(`broadcast/${req.headers.tenantId}`, params);
     }
+    debugger;
     res.status(200).json({result: true});
     next();
 }
