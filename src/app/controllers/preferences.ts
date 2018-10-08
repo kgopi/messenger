@@ -41,11 +41,59 @@ export module PreferencesController{
         });
     }
 
-    function getEventServiceParams(req, isSubscribed){
+    function getChannelSubscriptionParams(req, isSubscribed){
         const params = {userId: req.headers.userId, data: {}, isAdmin: req.headers.isAdmin || false};
-        params.data[req.params.media] = {"areas": {}};
-        params.data[req.params.media]["areas"][req.params.area] = {};
-        params.data[req.params.media]["areas"][req.params.area][req.params.eventName] = isSubscribed;
+        params.data["channelSubscriptions"] = {};
+        params.data["channelSubscriptions"][req.params.media] = {isEnabled: isSubscribed};
+        return params;
+    }
+
+    export function subscribe2Channel(req, res, next){
+        let data = {
+            userId: req.headers.userId,
+            tenantId: req.headers.tenantId,
+            params: getChannelSubscriptionParams(req, true),
+            callback: (err, result)=>{
+                if(err){
+                    req.log.debug(`Failed to subscribe to ${req.params.eventName} channel`, err);
+                    res.status(400).json({err});
+                }else{
+                    res.status(200).json(result.rows[0]);
+                }
+                next();
+            }
+        }
+        PreferencesService.update(data);
+    }
+
+    export function unSubscribe2Channel(req, res, next){
+        let data = {
+            userId: req.headers.userId,
+            tenantId: req.headers.tenantId,
+            params: getChannelSubscriptionParams(req, false),
+            callback: (err, result)=>{
+                if(err){
+                    req.log.debug(`Failed to subscribe to ${req.params.eventName} channel`, err);
+                    res.status(400).json({err});
+                }else{
+                    res.status(200).json(result.rows[0]);
+                }
+                next();
+            }
+        }
+        PreferencesService.update(data);
+    }
+
+    function getEventSubscriptionParams(req, isSubscribed){
+        const params = {userId: req.headers.userId, data: {}, isAdmin: req.headers.isAdmin || false};
+        params.data["eventSubscriptions"] = {};
+        let events = params.data["eventSubscriptions"][req.params.area] = {events: {}};
+        if(req.params.eventName == null){
+            events[req.params.media] = isSubscribed;
+        }else{
+            let event = events[req.params.eventName] = {};
+            event[req.params.media] = isSubscribed;
+        }
         return params;
     }
 
@@ -53,7 +101,7 @@ export module PreferencesController{
         let data = {
             userId: req.headers.userId,
             tenantId: req.headers.tenantId,
-            params: getEventServiceParams(req, true),
+            params: getEventSubscriptionParams(req, true),
             callback: (err, result)=>{
                 if(err){
                     req.log.debug(`Failed to subscribe to ${req.params.eventName} event`, err);
@@ -71,7 +119,7 @@ export module PreferencesController{
         let data = {
             userId: req.headers.userId,
             tenantId: req.headers.tenantId,
-            params: getEventServiceParams(req, false),
+            params: getEventSubscriptionParams(req, false),
             callback: (err, result)=>{
                 if(err){
                     req.log.debug(`Failed to un-subscribe to ${req.params.event} event`, err);

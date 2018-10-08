@@ -22,8 +22,6 @@ function errorHandler({tenantId, dbUri}){
 
 function connect2PGSql(tenantId, dbUri) {
 
-    debugger;
-
     let connection = anyDb.createPool(dbUri, {
         min: config.minDBConnections,
         max: config.maxDBConnections

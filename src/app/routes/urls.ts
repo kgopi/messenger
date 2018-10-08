@@ -7,6 +7,8 @@ export const urls = urltree({
   'unsubscribe2Entity': '/entity/unsubscribe/:entityId',
   'subscribe2Event': '/event/subscribe/:media/:area/:eventName',
   'unsubscribe2Event': '/event/unsubscribe/:media/:area/:eventName',
+  'subscribe2Channel': '/channel/subscribe/:media',
+  'unSubscribe2Channel': '/channel/unsubscribe/:media',
   'broadcast': '/broadcast',
   "preferences": "/preferences"
 });

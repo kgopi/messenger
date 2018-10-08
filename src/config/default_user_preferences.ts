@@ -1,26 +1,34 @@
 export default {
-    "email" : {
-        "enabled" : false,
-        "areas" : {
-            "ant" : false
+    channelSubscriptions:{
+        inApp:{
+            displayOrder: 1,
+            isEnabled: false,
+            settings:{
+                isSoundEnabled: true
+            }
+        },
+        email:{
+            displayOrder: 2,
+            isEnabled: false,
+            settings:{
+
+            }
         }
     },
-    "inApp" : {
-        "enabled" : false,
-        "areas" : {
-            "ant" : false
-        }
-    },
-    "mobile" : {
-        "enabled" : false,
-        "areas" : {
-            "ant" : false
-        }
-    },
-    "desktop" : {
-        "enabled" : false,
-        "areas" : {
-            "ant" : false
+    eventSubscriptions:{
+        ANT:{
+            label: "Timeline",
+            displayOrder: 1,
+            inApp: true,
+            email: true,
+            events: {
+                ACT_MENTION: {
+                    label: "ACT_MENTION",
+                    displayOrder: 1,
+                    inApp: true,
+                    email: true
+                }
+            }
         }
     }
  }
