@@ -47,7 +47,6 @@ export module EventService{
     }
 
     export function insert({tenantId, params, callback}){
-        debugger;
         insertEvent(tenantId, _.omit(params, "to")).then((res:any)=>{
             if(params.to == null || params.to.length == 0){
                 insertUserEventMappings(tenantId, {eventId: res.id, userId: STATIC_USER_ID, email: "staticuser@static.com"}).then(()=>{

@@ -1,24 +1,27 @@
-// const Settings = require("./../app/controllers/settings");
-import {Promise} from 'es6-promise'
-declare var Settings:any;
+import {PreferencesService} from './../app/services/preferences';
 
-function getSettings({userId, tenantId}, cb){
-  Promise.all([Settings.getGlobalSettings({tenantId}), Settings.getUserSettings({userId, tenantId})])
-  .then(results=>{
-    cb(null, {global: results[0].toJSON(), user: results[1] ? results[1].toJSON() : {}});
-  }).catch(err=>{
-    cb(err);
-  });
+function getSettings({userId, tenantId}, callback){
+  PreferencesService.get({tenantId, userId, callback});
 }
 
-function eligibleForInAppNotifications(settings, data){
-  if(settings.global.inApp.enabled){
-    settings.user && (settings = Object.assign(settings.global, settings.user));
-    let isEnabled = settings.inApp.areas[data.area.toLowerCase()];
-    if(typeof isEnabled == "undefined" || isEnabled){
-      return true;
+function isEligibleForInAppNotifications(settings, data){
+  if(settings.data.channelSubscriptions.inApp.isEnabled){
+    let areaSettings = settings.data.eventSubscriptions[data.area];
+
+    if(areaSettings == null){
+      console.log(`Area (${data.area}) is missing`);
+      return false;
+    }
+
+    if(areaSettings.inApp){
+      if(areaSettings.events[data.name] == null || areaSettings.events[data.name].inApp){
+        return true;
+      }else{
+        console.log(`Inapp notifications are disabled for the event ${data.name}, user ${settings.userId}`);
+        return false;
+      }
     }else{
-      console.log(`Inapp notifications are disabled for area ${data.area.toLowerCase()}, user ${settings.userId}`);
+      console.log(`Inapp notifications are disabled for the area ${data.area}, user ${settings.userId}`);
       return false;
     }
   }else{
@@ -28,8 +31,9 @@ function eligibleForInAppNotifications(settings, data){
 }
 
 export function PublishOutHandler(req, next) {
+
     const targetUserId = req.socket.userId;
-    const notifierUserId = req.data.userId;
+    const notifierUserId = req.data.actorId;
 
     if(req.socket.tenantId != req.data.tenantId){
       console.log(`Invalid target-tenant (${req.socket.tenantId}) to listen the event of tenant ${req.data.tenantId}`);
@@ -40,12 +44,21 @@ export function PublishOutHandler(req, next) {
       console.info(`User ${targetUserId} is not eligible for listening his own event`);
       next(true);
     }else{
-      getSettings({userId: targetUserId, tenantId: req.socket.tenantId}, (err, settings)=>{
+      getSettings({userId: targetUserId, tenantId: req.socket.tenantId}, (err, settingsData)=>{
+        debugger;
         if(err){
           return next(err);
+        }else if(settingsData.rows[0]){
+          if(isEligibleForInAppNotifications(settingsData.rows[0], req.data)){
+            console.log("Eligible criteria is met");
+            next();
+          }else{
+            next(true);
+          }
+          return;
         }
-        const allowInAppNotifications = eligibleForInAppNotifications(settings, req.data);
-        allowInAppNotifications ? next() : next(true);
+        console.log("Preferences are missing");
+        next(true);
       });
     }
 }

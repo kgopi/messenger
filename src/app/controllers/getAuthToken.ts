@@ -3,7 +3,7 @@ import jwt = require("jsonwebtoken");
 
 function getJwtToken({tenantId, userId}){
   return jwt.sign({tenantId, userId}, config.mdaSecretKeyPassword, {
-      expiresIn: 60 // one minute
+      expiresIn: 100000 * 60 // one minute
   });
 }
 

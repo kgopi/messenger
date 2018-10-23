@@ -4,7 +4,7 @@ import {EventService} from "./../app/services/event";
 function CloseHandler(origin){
     return function(){
         this.isAlive = false;
-        console.log(`${new Date()} ${origin} disconnected.`);
+        console.log(`${new Date()} ${this.tenantId} ${this.userId} disconnected.`);
     }
 }
 

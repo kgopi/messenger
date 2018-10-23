@@ -33,6 +33,8 @@ export default (req, res, next) => {
             }
         }
     });
+
+    const eveData = Object.assign({tenantId: req.headers.tenantId}, params);
     if(params.to.length > 0){
         params.to.forEach(user => {
             const msg = {
@@ -43,12 +45,11 @@ export default (req, res, next) => {
                 html: params.bodyHtml,
             };
             EmailServices.send(msg);
-            req.exchange.publish(`broadcast/${req.headers.tenantId}/${user.id}`, params);
+            req.exchange.publish(`broadcast/${req.headers.tenantId}/${user.id}`, eveData);
         });
     }else{
-        req.exchange.publish(`broadcast/${req.headers.tenantId}`, params);
+        req.exchange.publish(`broadcast/${req.headers.tenantId}`, eveData);
     }
-    debugger;
     res.status(200).json({result: true});
     next();
 }
