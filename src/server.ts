@@ -26,7 +26,9 @@ const options = {
   wsEngineServerOptions: {
     path: '/'
   },
-  rabbitmq: config.rabbitmq
+  rabbitmq: config.rabbitmq,
+  pingInterval: 20000,
+  pingTimeout: 30000
 };
 
 var start = function () {
