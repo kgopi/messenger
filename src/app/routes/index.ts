@@ -14,7 +14,7 @@ export function routes(app) {
     // Allow the api to accept request from web app
     router.use(cors({
         origin: '*',
-        methods: 'GET,HEAD,OPTIONS,POST'
+        methods: 'GET,HEAD,OPTIONS,POST,PUT'
     }));
 
     // enable cors preflight for all endpoints
@@ -29,6 +29,7 @@ export function routes(app) {
     router.route(urls.subscribe2Channel.toString()).post(PreferencesController.subscribe2Channel);
     router.route(urls.unSubscribe2Channel.toString()).post(PreferencesController.unSubscribe2Channel);
     router.route(urls.preferences.toString()).get(PreferencesController.getUserPreferences);
+    router.route(urls.preferences.toString()).put(PreferencesController.saveUserPreferences);
     router.route(urls.broadcast.toString()).post(Validators.Event.validate, BroadCast);
 
     app.use('/messenger', router); // :version should be changed to version number

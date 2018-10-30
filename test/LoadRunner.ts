@@ -2,10 +2,7 @@ import {create} from 'socketcluster-client';
 import request  = require('request');
 const argv = require('minimist')(process.argv.slice(2));
 
-console.log(argv);
-
-var count = 0;
-var oo = null;
+let count = 0;
 
 class Connection{
 
@@ -17,10 +14,8 @@ class Connection{
 
     async init(){
         try{
-            if(oo == null){
-                oo = await this.getAuthToken();
-            }
-            this.initConnection(oo);
+            let id = await this.getAuthToken();
+            this.initConnection(id);
         }catch(e){
             console.log(e);
         }

@@ -14,7 +14,7 @@ module.exports.attach = function (broker) {
   var destroyChannelExchange = function (channelName) {
     var rabbitExchange = rabbitClient.exchange(channelName, {noDeclare: true, passive: true});
     resetErrorHandler(rabbitClient);
-    var rabbitQueue = rabbitClient.queue('', {exclusive: true});
+    var rabbitQueue = rabbitClient.queue('messenger', {exclusive: true});
     rabbitExchange.destroy();
     console.log("Channel exchange is destroyed");
   };
@@ -25,10 +25,16 @@ module.exports.attach = function (broker) {
 
   rabbitClient.on('ready', function () {
     broker.on('subscribe', function (channelName) {
+
+      console.log(`on subscribe channelName :: ${channelName}`);
+
       rabbitClient.exchange(channelName, {type: 'fanout', durable: true, autoDelete: false}, function (rabbitExchange) {
+
+        console.log(`on exchange channelName :: ${channelName}`);
+
         if (!queueMap[channelName]) {
-          queueMap[channelName] = rabbitClient.queue('', {exclusive: true}, function (rabbitQueue) {
-            rabbitQueue.bind(rabbitExchange, '');
+          queueMap[channelName] = rabbitClient.queue('messenger', {exclusive: true}, function (rabbitQueue) {
+            rabbitQueue.bind(rabbitExchange, 'messenger');
             rabbitQueue.subscribe(function (packet) {
               console.info(`Received (${channelName}) event from rabbitmq`);
               if (packet && packet.instanceId != instanceId) {
@@ -51,7 +57,7 @@ module.exports.attach = function (broker) {
       };
       rabbitClient.exchange(channelName, {type: 'fanout', durable: true, autoDelete: false}, function (rabbitExchange) {
         console.info(`Publishing (${channelName}) event to rabbitmq from broker ${instanceId}`);
-        rabbitExchange.publish('', packet, {
+        rabbitExchange.publish('messenger', packet, {
           contentType: 'application/json'
         });
       });

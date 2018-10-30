@@ -18,7 +18,7 @@ export module PreferencesController{
                     res.status(400).json({err});
                 }
             }else{
-                res.status(200).json(result.rows[0]);
+                res.status(200).json({data: result.rows[0], result: true});
             }
             next();
         });
@@ -34,7 +34,7 @@ export module PreferencesController{
                     req.log.debug('Failed to un-subscribe entity preferences', err);
                     res.status(400).json({err});
                 }else{
-                    res.status(200).json(result.rows[0]);
+                    res.status(200).json({data: result.rows[0], result: true});
                 }
                 next();
             }
@@ -58,7 +58,7 @@ export module PreferencesController{
                     req.log.debug(`Failed to subscribe to ${req.params.eventName} channel`, err);
                     res.status(400).json({err});
                 }else{
-                    res.status(200).json(result.rows[0]);
+                    res.status(200).json({data: result.rows[0], result: true});
                 }
                 next();
             }
@@ -107,7 +107,7 @@ export module PreferencesController{
                     req.log.debug(`Failed to subscribe to ${req.params.eventName} event`, err);
                     res.status(400).json({err});
                 }else{
-                    res.status(200).json(result.rows[0]);
+                    res.status(200).json({data: result.rows[0], result: true});
                 }
                 next();
             }
@@ -125,7 +125,7 @@ export module PreferencesController{
                     req.log.debug(`Failed to un-subscribe to ${req.params.event} event`, err);
                     res.status(400).json({err});
                 }else{
-                    res.status(200).json(result.rows[0]);
+                    res.status(200).json({data: result.rows[0], result: true});
                 }
                 next();
             }
@@ -137,12 +137,32 @@ export module PreferencesController{
         PreferencesService.get({tenantId: req.headers.tenantId, userId: req.headers.userId, callback: (err, result)=>{
             if(err){
                 req.log.debug(`Failed to get peferences for the user ${req.headers.userId}`, err);
-                res.status(400).json({err});
+                res.status(400).json({result: false, err: err});
             }else{
-                res.status(200).json(result.rows[0]);
+                res.status(200).json({data: result.rows[0], result: true});
             }
             next();
         }});
+    }
+
+    export function saveUserPreferences(req, res, next){
+        debugger;
+        console.log("Gopi", req.body);
+        let data = {
+            userId: req.headers.userId,
+            tenantId: req.headers.tenantId,
+            params: req.body,
+            callback: (err, result)=>{
+                if(err){
+                    req.log.debug(`Failed to save to preferences`, err);
+                    res.status(400).json({err});
+                }else{
+                    res.status(200).json({data: result.rows[0], result: true});
+                }
+                next();
+            }
+        }
+        PreferencesService.update(data);
     }
 
 }
