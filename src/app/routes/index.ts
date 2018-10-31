@@ -4,6 +4,7 @@ const router = express.Router();
 import * as cors from 'cors';
 
 import {getAuthToken} from "./../controllers/getAuthToken";
+import {db} from "./../db/index";
 import {EventsController} from "./../controllers/event";
 import {PreferencesController} from "./../controllers/preferences";
 import {default as BroadCast} from "./../controllers/broadcast";
@@ -22,6 +23,7 @@ export function routes(app) {
     
     router.route(urls.token.toString()).get(getAuthToken);
     router.route(urls.list.toString()).get(EventsController.list);
+    router.route(urls.dbSetup.toString()).post(db.initDb);
     router.route(urls.subscribe2Entity.toString()).post(PreferencesController.subscribe2Entity);
     router.route(urls.unsubscribe2Entity.toString()).post(PreferencesController.unSubscribe2Entity);
     router.route(urls.subscribe2Event.toString()).post(PreferencesController.subscribe2Event);
@@ -32,5 +34,5 @@ export function routes(app) {
     router.route(urls.preferences.toString()).put(PreferencesController.saveUserPreferences);
     router.route(urls.broadcast.toString()).post(Validators.Event.validate, BroadCast);
 
-    app.use('/messenger', router); // :version should be changed to version number
+    app.use('/messenger2', router); // :version should be changed to version number
 }

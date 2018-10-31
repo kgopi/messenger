@@ -45,7 +45,6 @@ export function PublishOutHandler(req, next) {
       next(true);
     }else{
       getSettings({userId: targetUserId, tenantId: req.socket.tenantId}, (err, settingsData)=>{
-        debugger;
         if(err){
           return next(err);
         }else if(settingsData.rows[0]){

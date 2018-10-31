@@ -3,9 +3,10 @@
 import bunyan = require('bunyan');
 import uuid   = require('node-uuid');
 import _      = require('lodash');
+import {config} from './../../config';
 
 const defaults = {
-  name: 'messengerApi',
+  name: 'messenger',
   src: true,
   serializers: {
     req: bunyan.stdSerializers.req,
@@ -62,15 +63,12 @@ function development() {
   );
 
   const log = bunyan.createLogger(options);
-
   log.level(bunyan.DEBUG);
-
   return pre;
 }
 
 function production() {
-  log.level(bunyan.INFO);
-
+  log.level(config.LOG_LEVEL);
   return pre;
 }
 

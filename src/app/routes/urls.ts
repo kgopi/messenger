@@ -3,6 +3,7 @@ const urltree = require('urltree');
 export const urls = urltree({
   'token': '/token',
   'list': '/list',
+  'dbSetup': '/db/setup',
   'subscribe2Entity': '/entity/subscribe/:entityName/:entityId',
   'unsubscribe2Entity': '/entity/unsubscribe/:entityId',
   'subscribe2Event': '/event/subscribe/:media/:area/:eventName',

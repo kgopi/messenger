@@ -146,7 +146,6 @@ export module PreferencesController{
     }
 
     export function saveUserPreferences(req, res, next){
-        debugger;
         console.log("Gopi", req.body);
         let data = {
             userId: req.headers.userId,

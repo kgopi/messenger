@@ -12,7 +12,7 @@ export function configureApp(app, config) {
 
     hrefs.configure(config.apiHost, 'messenger');
 
-    app.use(config.env === 'development' ? logger.development() : logger.production());
+    app.use(config.environment === 'development' ? logger.development() : logger.production());
     app.use(require('./../app/utils/middleware/headers'));
     app.use(require('./../app/utils/middleware/parseUrl'));
 
@@ -21,7 +21,6 @@ export function configureApp(app, config) {
     app.use(bodyParser());
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded());
-    app.use(bodyLogger());
 
     app.use(cookieParser());
     app.use(responseTime());

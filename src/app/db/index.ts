@@ -15,7 +15,9 @@ types.setTypeParser(timestampOID, function(stringValue) {
 const AppCache = new NodeCache({stdTTL : 3600, checkperiod: 120});
 
 function errorHandler({tenantId, dbUri}){
-    return ()=>{
+    return (err)=>{
+        console.log("DB connection closed", err);
+        AppCache.set(dbUri, {connection: null});
         AppCache.set(tenantId, {dbUri, connection: null});
     }
 }
@@ -27,28 +29,31 @@ function connect2PGSql(tenantId, dbUri) {
         max: config.maxDBConnections
     });
 
+    console.log(`Established DB connection for the tenant ${tenantId}`);
+
     connection.on('error', errorHandler({tenantId, dbUri}));
     connection.on('close', errorHandler({tenantId, dbUri}));
 
-    return new Promise((resolve, reject)=>{
-        AppCache.set(tenantId, {dbUri, connection}, function(err, success) {
-            if( !err && success ){
-                resolve(connection);
-            } else {
-                reject(err);
-            }
-        });
-    });
+    AppCache.set(tenantId, {connection, dbUri});
+    AppCache.set(dbUri, {connection});
+
+    return connection;
 }
 
 function fetchDbDetails(req){
+
+    let data:any = AppCache.get(req.headers.tenantId);
+    if(data != null && data.dbUri != null){
+        return Promise.resolve(data.dbUri);
+    }
+
     return new Promise((resolve, reject)=>{
         request.get(config.mdaHost + '/v1.0/api/gsnap/dbdetails', {headers: {secret: req.headers.secret, requestinfo: req.headers.requestinfo}}, (err, data)=>{
             try {
                 if(err || data.statusCode != 200) {
-                    return console.error('MDA db-details api request failed, reason: ', err || data.body);
+                    return req.log.error('MDA db-details api request failed, reason: ', err || data.body);
                 }else{
-                    console.info('MDA db-details api response, reason: ', data.body);
+                    req.log.info('Successully fetched the db deatils');
                 }
 
                 var _responseBody = JSON.parse(data.body);
@@ -56,7 +61,7 @@ function fetchDbDetails(req){
                     let decryptObj  = JSON.parse(cryptor.decrypt(_responseBody.data));
                     let dbDetails = decryptObj.postgresDBDetail.dbServerDetails[0];
                     let dbUri = `postgres://${dbDetails.userName}:${encodeURIComponent(dbDetails.password)}@${dbDetails.host}/${decryptObj.postgresDBDetail.dbName}`;
-                    connect2PGSql(req.headers.tenantId, dbUri).then(resolve, reject);
+                    resolve(dbUri);
                 } else {
                     reject();
                 }
@@ -68,33 +73,33 @@ function fetchDbDetails(req){
 }
 
 export module db{
-    export function connect(tenantId:string):Promise<anyDb.ConnectionPool> {
+    export function connect(tenantId:string, req?:Request):Promise<anyDb.ConnectionPool> {
         return new Promise((resolve, reject)=>{
-            AppCache.get(tenantId, (err, data:any) => {
-                if(data == null) {
-                    //fetchDbDetails(req).then(resolve, reject);
-                }else if(data.connection == null){
-                    connect2PGSql(tenantId, data.dbUri).then(resolve, reject);
-                }else{
-                    resolve(data.connection);
-                }
-            });
+            const data:any = AppCache.get(tenantId);
+            if(data == null) {
+                req ? fetchDbDetails(req).then((dbUri)=>{
+                    const connection = connect2PGSql(tenantId, dbUri);
+                    connection ? resolve(connection) : reject("DB connection failed");
+                }, reject) : reject("Request object is missing");
+            }else if(data.connection == null){
+                const connection = connect2PGSql(tenantId, data.dbUri);
+                connection ? resolve(connection) : reject("DB connection failed");
+            }else{
+                resolve(data.connection);
+            }
         });
     }
 
     export function initDb(req, res, next){
-        AppCache.get(req.headers.tenantId, (err, data) => {
-            if(data === undefined) {
-                // Cache Missed. Either Failed or not found
-                // If cache is missed ? we make call to MDA
-                fetchDbDetails(req).then((data)=>{
-                    next();
-                }, (err)=>{
-                    next(err);
-                });
-            } else {
-                next();
-            }
+        connect(req.headers.tenantId, req).then((connection)=>{
+            const tenantId = req.headers.tenantId.replace(/-/g, '');
+            connection.query(`select create_messenger_entities('${tenantId}')`, null, (err)=>{
+                if(err){
+                    res.status(400).json({result: false, err});
+                }else{
+                    res.status(200).json({result: true});
+                }
+            });
         });
     }
 }

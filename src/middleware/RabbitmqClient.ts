@@ -25,13 +25,7 @@ module.exports.attach = function (broker) {
 
   rabbitClient.on('ready', function () {
     broker.on('subscribe', function (channelName) {
-
-      console.log(`on subscribe channelName :: ${channelName}`);
-
       rabbitClient.exchange(channelName, {type: 'fanout', durable: true, autoDelete: false}, function (rabbitExchange) {
-
-        console.log(`on exchange channelName :: ${channelName}`);
-
         if (!queueMap[channelName]) {
           queueMap[channelName] = rabbitClient.queue('messenger', {exclusive: true}, function (rabbitQueue) {
             rabbitQueue.bind(rabbitExchange, 'messenger');
